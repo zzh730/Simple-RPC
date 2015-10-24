@@ -2,6 +2,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <errno.h>
+
 
 #define BUFFER_SIZE 128
 #define PORTNO 8888
@@ -18,7 +20,6 @@ void error(char *msg)
 int main(int argc, char *argv[])
 {   
     int sockfd, newsockfd, portno, pid;
-    socklen_t clilen;
     char buffer[BUFFER_SIZE];
     struct sockaddr_in serv_addr, cli_addr;
 
@@ -30,25 +31,36 @@ int main(int argc, char *argv[])
     //set the socket using unix address space and tcp/ip protocol
     sockfd =  socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
+    {
         error ("EOORO opening socket");
+        exit(errno);
+    }
 
     bzero((char *) &serv_addr, sizeof(serv_addr));
     // set the server addrass 
-    portno = atoi(PORTNO);
+    portno = PORTNO;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(portno);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     
-    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+    if (bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
+    {
         error("ERROR on binding");
+        exit(errno);
 
+    }    
     // listen 
-    listen(sockfd,5);
+    if ( listen(sockfd,5) != 0)
+    {
+        perror("ERROR on listen");
+        exit(errno);
+
+    }
 
     // accept client connection
-    clilen = sizeof(cli_addr);
     while(1)
-    {
+    {   
+        int clilen = sizeof(cli_addr);
         newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
         if (newsockfd < 0)
             error("ERROR on accept");
