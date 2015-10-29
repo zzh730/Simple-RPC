@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     while(1)
     {   
         int clilen = sizeof(cli_addr);
-        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
         if (newsockfd < 0)
             error("ERROR on accept");
         //print out client ip address and port
@@ -98,18 +98,25 @@ int main(int argc, char *argv[])
 void *connection_handler(void *socket_desc)
 {   
     int self_id = 100;
+    int number = 3;
     //Get the socket descriptor
     int sock = *(int*)socket_desc;
     int n;
     char *message , client_message[2000];
      
     //Send some messages to the client
-    message = "Connectation with server established \n";
-    write(sock , message , strlen(message));
+    // message = "Connectation with server established \n";
+    // write(sock , message , strlen(message));
      
-    //Receive a message from client
-    n = processwc(sock, self_id);
+    //Word count
+    //n = processwc(sock, self_id);
      
+
+    n = processarray(sock, self_id,number);
+    if (n < 0)
+    {
+        error("ERROR: process array in server");
+    }
     if(n < 0)
     {
         puts("Client disconnected");

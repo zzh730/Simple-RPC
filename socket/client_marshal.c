@@ -1,11 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <errno.h>
+#include <string.h>
 #include "marshal.h"
-#define BUFFER_SIZE 128
+
 
 
 
@@ -23,8 +25,7 @@ int main(int argc, char *argv[])
     if (argc < 3)
     {
         fprintf(stderr, "usage %s hostname port\n", argv[0]);
-        exit(0);
-
+        error("ERROR");
     }
     portno = atoi(argv[2]);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
     if (server == NULL)
     {
         fprintf(stderr, "ERROR, no such host\n");
-        exit(0);
+        error("ERROR");
 
     }
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
         server->h_length);
     serv_addr.sin_port = htons(portno);
 
-    if (connect(sockfd, &serv_addr, sizeof(serv_addr)) < 0)
+    if (connect(sockfd,(struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
     {
         error("ERROR connecting");
     
@@ -68,22 +69,76 @@ int main(int argc, char *argv[])
         //     error("ERROR wrtiting to socket");
         //     exit(errno);
         // }
-//---------word count--------------
-        bzero(buffer, BUFFER_SIZE);
-        n = marshalwc(sockfd, 1,1,"asdf sdfa fsdfg sdf");
-        if (n < 0)
-            error("ERROR when marshalling!");
+// //---------word count--------------
+//         bzero(buffer, BUFFER_SIZE);
+//         n = marshalwc(sockfd, 1,1,"asdf sdfa fsdfg sdf");
+//         if (n < 0)
+//             error("ERROR when marshalling!");
         
-        n = read(sockfd,buffer, BUFFER_SIZE);
-        if (n < 0)
-        {    
-            error("ERROR reading from socket");
-        }
-        n = unmarshalwc(sockfd);
-//---------word count--------------
+//         n = read(sockfd,buffer, BUFFER_SIZE);
+//         if (n < 0)
+//         {    
+//             error("ERROR reading from socket");
+//         }
+//         int wordcount = unmarshalwc(sockfd);
+// //---------word count--------------
+
+//---------min()-----------        
+    //     bzero(buffer, BUFFER_SIZE);
+    //     int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
+    //     n = marshalmin(sockfd, 1,1,10, arr);
+    //     if (n < 0)
+    //     {
+    //         error("ERROR: marshalling data");
+
+    //     }
+    //     bzero(buffer, BUFFER_SIZE);
+    //     int min_num = unmarshalmin(sockfd);
+    //     if (n < 0)
+    //     {    
+    //         error("ERROR unmarshal array in client");
+    //     }
+// //---------max()--------
+//     bzero(buffer, BUFFER_SIZE);
+//     int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
+//     n = marshalmax(sockfd, 1,1,10, arr);
+//     if (n < 0)
+//     {
+//         error("ERROR: marshalling data");
+
+//     }
+
+//     bzero(buffer, BUFFER_SIZE);
+//     int max_num = unmarshalmax(sockfd);
+//     if (n < 0)
+//     {    
+//         error("ERROR unmarshal array in client");
+//     }
+// ----max()----------  
+//-----sort()--------
+    bzero(buffer, BUFFER_SIZE);
+    int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
+
+    n = marshalsort(sockfd, 1,1,10, arr);
+    if (n < 0)
+    {
+        error("ERROR: marshalling data");
 
     }
-    close(sockfd);
 
+    bzero(buffer, BUFFER_SIZE);
+    int *newarr =(int *) malloc(10*sizeof(int));
+    newarr = unmarshalsort(sockfd,10);
+    if (n < 0)
+    {    
+        error("ERROR unmarshal array in client");
+    }
+
+    free(newarr);
+
+    }
+
+
+//---------------------------
     return 0;
 }
