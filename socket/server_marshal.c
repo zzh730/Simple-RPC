@@ -8,23 +8,19 @@
 #include <errno.h>
 #include <unistd.h> // write
 #include <pthread.h> // threading
+#include "marshal.h"
 
 
-#define BUFFER_SIZE 9999
 #define PORTNO 8888
 
 // function to perform on server
 void dostuff(int);
 void *connection_handler(void *);
 
-void error(char *msg)
-{
-    perror(msg);
-    exit(1);
-}
 
 int main(int argc, char *argv[])
 {   
+    int self_id = 100;
     int sockfd, newsockfd, portno, *new_sock;
     char buffer[BUFFER_SIZE];
     struct sockaddr_in serv_addr, cli_addr;
@@ -100,10 +96,11 @@ int main(int argc, char *argv[])
 
 
 void *connection_handler(void *socket_desc)
-{
+{   
+    int self_id = 100;
     //Get the socket descriptor
     int sock = *(int*)socket_desc;
-    int read_size;
+    int n;
     char *message , client_message[2000];
      
     //Send some messages to the client
@@ -111,28 +108,14 @@ void *connection_handler(void *socket_desc)
     write(sock , message , strlen(message));
      
     //Receive a message from client
-    while( (read_size = recv(sock , client_message , 2000 , 0)) > 0 )
-    {
-        //end of string marker
-        client_message[read_size] = '\0';
-        
-        //Send the message back to client
-        write(sock , client_message , strlen(client_message));
-        
-        //clear the message buffer
-        memset(client_message, 0, 2000);
-    }
+    n = processwc(sock, self_id);
      
-    if(read_size == 0)
+    if(n < 0)
     {
         puts("Client disconnected");
         fflush(stdout);
     }
-    else if(read_size == -1)
-    {
-        perror("recv failed");
-    }
-
+    
     free(socket_desc);
 
     return 0;

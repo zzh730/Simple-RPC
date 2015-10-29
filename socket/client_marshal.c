@@ -4,14 +4,10 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <errno.h>
-
+#include "marshal.h"
 #define BUFFER_SIZE 128
 
-void error(char *msg)
-{
-    perror(msg);
-    exit(0);
-}
+
 
 // argv[0]: 
 // argv[1]: name of the host eg cs.pitt.edu
@@ -62,24 +58,30 @@ int main(int argc, char *argv[])
     while(1)
     {   
         // testing, send msg to server
-        printf("Enter msg to server: ");
+        printf("Enter msg to server: \n");
         bzero(buffer, BUFFER_SIZE);
         fgets(buffer, BUFFER_SIZE - 1, stdin);
-        n = write(sockfd, buffer, strlen(buffer));
+        // n = write(sockfd, buffer, strlen(buffer));
 
-        if (n < 0)
-        {    
-            error("ERROR wrtiting to socket");
-            exit(errno);
-        }
-
+        // if (n < 0)
+        // {    
+        //     error("ERROR wrtiting to socket");
+        //     exit(errno);
+        // }
+//---------word count--------------
         bzero(buffer, BUFFER_SIZE);
+        n = marshalwc(sockfd, 1,1,"asdf sdfa fsdfg sdf");
+        if (n < 0)
+            error("ERROR when marshalling!");
+        
         n = read(sockfd,buffer, BUFFER_SIZE);
         if (n < 0)
         {    
             error("ERROR reading from socket");
         }
-        printf("%s",buffer);
+        n = unmarshalwc(sockfd);
+//---------word count--------------
+
     }
     close(sockfd);
 
