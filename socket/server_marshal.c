@@ -111,18 +111,20 @@ void *connection_handler(void *socket_desc)
     //Word count
     //n = processwc(sock, self_id);
      
-
-    n = processarray(sock, self_id,number);
-    if (n < 0)
-    {
-        error("ERROR: process array in server");
-    }
+//-----array()-------
+    // n = processarray(sock, self_id,number);
+    // if(n < 0)
+    // {
+    //     puts("Client disconnected");
+    //     fflush(stdout);
+    // }
+// ------------------ 
+    n = processmultiply(sock, self_id);
     if(n < 0)
     {
-        puts("Client disconnected");
-        fflush(stdout);
+        error("ERROR: multiply");
     }
-    
+
     free(socket_desc);
 
     return 0;

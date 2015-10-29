@@ -116,25 +116,65 @@ int main(int argc, char *argv[])
 //     }
 // ----max()----------  
 //-----sort()--------
-    bzero(buffer, BUFFER_SIZE);
-    int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
+    // bzero(buffer, BUFFER_SIZE);
+    // int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
 
-    n = marshalsort(sockfd, 1,1,10, arr);
-    if (n < 0)
-    {
-        error("ERROR: marshalling data");
+    // n = marshalsort(sockfd, 1,1,10, arr);
+    // if (n < 0)
+    // {
+    //     error("ERROR: marshalling data");
+
+    // }
+
+    // bzero(buffer, BUFFER_SIZE);
+    // int *newarr =(int *) malloc(10*sizeof(int));
+    // newarr = unmarshalsort(sockfd,10);
+    // if (n < 0)
+    // {    
+    //     error("ERROR unmarshal array in client");
+    // }
+//-------------------
+    int arr[3][4]  = {
+        {1,2,3,4},
+        {5,6,7,8},
+        {9,10,11,12}
+    }; 
+    n = marshal2darr(sockfd, 1, 1, 3,4,arr);
+    if (n < 0){
+        error("ERROR: marshal 2d array");
 
     }
+    int B[4][5] = {
+        {1,2,3,4,5},
+        {6,7,8,9,10},
+        {11,12,13,14,15},
+        {16,17,18,19,20}
+    };
+    n = marshal2darr(sockfd, 1, 1, 4,5,B);
+    if (n < 0){
+        error("ERROR: marshal 2d array");
 
-    bzero(buffer, BUFFER_SIZE);
-    int *newarr =(int *) malloc(10*sizeof(int));
-    newarr = unmarshalsort(sockfd,10);
-    if (n < 0)
-    {    
-        error("ERROR unmarshal array in client");
     }
+    int C[5][3]={
+        {1,2,3},
+        {4,5,6},
+        {7,8,9},
+        {10,11,12},
+        {13,14,15}
+    };
+    n = marshal2darr(sockfd, 1, 1, 5,3,C);
+    if (n < 0){
+        error("ERROR: marshal 2d array");
 
-    free(newarr);
+    }
+    
+    int  newarr[3][3];
+    n = unmarshal2darr(sockfd,3,3,newarr);
+    if (n < 0){
+        error("ERROR: unmarshal 2d array");
+
+    }
+    //free(newarr);
 
     }
 

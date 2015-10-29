@@ -18,11 +18,9 @@ typedef struct
 {
     int id; 
     int number;
-    int size;
-    char data[BUFFER_SIZE];
-} Packet_Arr;
-
-
+    int m;
+    int n;
+} arr2d;
 
 
 int processwc(int fd, int selfid);
@@ -38,6 +36,10 @@ int unmarshalmax(int sockfd);
 
 int marshalsort(int sockfd, int id, int number, int size, int *arr);
 int *unmarshalsort(int sockfd, int size);
+
+int marshal2darr(int sockfd, int id, int number, int n, int m, int A[n][m]);
+int processmultiply(int sockfd, int self_id);
+int unmarshal2darr(int sockfd, int n,int m,int res[n][m]);
 
 void error(char *msg);
 
