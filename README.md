@@ -7,6 +7,7 @@ blocks until the remote server sends a reply. This behavior is similar to the cl
 interaction between main programs and procedures.
 
 HOW TO RUN
+
 1. git clone 
 2. cd Simple-RPC
 3. make
