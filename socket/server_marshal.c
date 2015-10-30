@@ -9,9 +9,12 @@
 #include <unistd.h> // write
 #include <pthread.h> // threading
 #include "marshal.h"
-
+#include "list.h"
+#include "mapper.h"
+#include "entry.h"
 
 #define PORTNO 8888
+
 
 // function to perform on server
 void dostuff(int);
@@ -105,25 +108,93 @@ void *connection_handler(void *socket_desc)
     char *message , client_message[2000];
      
     //Send some messages to the client
-    // message = "Connectation with server established \n";
-    // write(sock , message , strlen(message));
-     
-    //Word count
-    //n = processwc(sock, self_id);
-     
-//-----array()-------
-    // n = processarray(sock, self_id,number);
-    // if(n < 0)
-    // {
-    //     puts("Client disconnected");
-    //     fflush(stdout);
-    // }
-// ------------------ 
-    n = processmultiply(sock, self_id);
-    if(n < 0)
+    message = "Connectation with server established \n";
+    //write(sock , message , strlen(message));
+    
+    char sel;
+    n = recv(sock, (void *) &sel, sizeof(char),0);
+    if(n<0)
     {
-        error("ERROR: multiply");
+        error("ERROR: receiving function number");
+
     }
+    switch(sel)
+    {
+        case 'a':
+        {
+            n = processwc(sock, self_id);
+            if(n<0)
+            {
+                error("ERROR: receiving function number");
+
+            } 
+            break;           
+        }
+        case 'b':
+        {
+            n = processarray(sock, self_id, MAX);
+            if(n<0)
+            {
+                error("ERROR: receiving function number");
+
+            } 
+            break;
+        }
+        case 'c':
+        {
+            n = processarray(sock, self_id, MIN);
+            if(n<0)
+            {
+                error("ERROR: receiving function number");
+
+            } 
+            break;
+        }
+        case 'd':
+        {
+            n = processarray(sock, self_id, SORT);
+            if(n<0)
+            {
+                error("ERROR: receiving function number");
+
+            } 
+            break;
+        }
+        case 'e':
+        {
+            n = processmultiply(sock, self_id);
+            if(n<0)
+            {
+                error("ERROR: receiving function number");
+
+            } 
+            break;
+        }
+        default:
+        {
+            puts("Client disconnected");
+            fflush(stdout);
+        }
+
+    }
+
+
+//     //Word count
+//     //n = processwc(sock, self_id);
+     
+// //-----array()-------
+//     // n = processarray(sock, self_id,number);
+//     // if(n < 0)
+//     // {
+//     //     puts("Client disconnected");
+//     //     fflush(stdout);
+//     // }
+// // ------------------ 
+//     n = processmultiply(sock, self_id);
+//     if(n < 0)
+//     {
+//         error("ERROR: multiply");
+//     }
 
     free(socket_desc);
 

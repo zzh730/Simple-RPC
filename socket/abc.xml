@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<program>
+<id>numeric_id</id>
+<name>name</name>
+<version>version</version>
+<procedure>
+<name>proc_name</name>
+<id>numeric id</id>
+<return>type</return>
+<param>
+<name>param_name</name>
+<index>index</index>
+<type>type</type>
+</param>
+</procedure>
+</program>

@@ -8,4 +8,5 @@ int min(int size, int *array);
 int max(int size, int *array);
 int wc(char *str);
 
+
 #endif
