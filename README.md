@@ -8,7 +8,7 @@ interaction between main programs and procedures.
 
 HOW TO RUN
 
-1. git clone 
+1. git clone https://github.com/zzh730/Simple-RPC.git 
 2. cd Simple-RPC
 3. make
 4. ./server
