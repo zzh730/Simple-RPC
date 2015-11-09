@@ -47,6 +47,18 @@ int *input1darr(int size)
 
 }
 
+int *input2darr(int m, int n)
+{
+    int arr[m*n];
+    printf("Please the element of array\n");
+    for (int i = 0; i < m*n; i++)
+    {
+        scanf("%d", &arr[i]);
+
+    }
+    return arr;
+}
+
 // argv[0]: 
 // argv[1]: name of the host eg cs.pitt.edu
 // argv[2]: port number 
@@ -124,7 +136,11 @@ int main(int argc, char *argv[])
                 {   
 
                     bzero(buffer, BUFFER_SIZE);
-                    char *str = "I am a student.";
+                    printf("Please enter the string\n");
+                    getchar();
+
+                    char str[1024];
+                    fgets(str, 1024, stdin);
                     n = marshalwc(sockfd, 1,1,str);
                     if (n < 0)
                         error("ERROR when marshalling!");
@@ -138,9 +154,9 @@ int main(int argc, char *argv[])
                 {
                     bzero(buffer, BUFFER_SIZE);
                     //int size = inputsize();
-                    int arr[10] = {1,2,3,4,5000,6,7,8,-9999,0};
-
-                    n = marshalmax(sockfd, 1,2,10, arr);
+                    int arr_size = inputsize();
+                    int *arr = input1darr(arr_size);
+                    n = marshalmax(sockfd, 1,2, arr_size, arr);
                     if (n < 0)
                     {
                         error("ERROR: marshalling data");
@@ -158,8 +174,10 @@ int main(int argc, char *argv[])
             case 'c':
             {
                 bzero(buffer, BUFFER_SIZE);
-                int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
-                n = marshalmin(sockfd, 1,3,10, arr);
+
+                int arr_size = inputsize();
+                int *arr = input1darr(arr_size);
+                n = marshalmin(sockfd, 1,3, arr_size, arr);
                 if (n < 0)
                 {
                     error("ERROR: marshalling data");
@@ -176,9 +194,9 @@ int main(int argc, char *argv[])
             case 'd':
             {
                 bzero(buffer, BUFFER_SIZE);
-                int arr[] = {1,2,3,4,5000,6,7,8,-9999,0};
-
-                n = marshalsort(sockfd, 1,4,10, arr);
+                int arr_size = inputsize();
+                int *arr = input1darr(arr_size);
+                n = marshalsort(sockfd, 1,4,arr_size, arr);
                 if (n < 0)
                 {
                     error("ERROR: marshalling data");
@@ -198,42 +216,41 @@ int main(int argc, char *argv[])
             }
             case 'e':
                 {
-                    int arr[3][4]  = {
-                        {1,2,3,4},
-                        {5,6,7,8},
-                        {9,10,11,12}
-                    }; 
-                    n = marshal2darr(sockfd, 1, 5, 3,4,arr);
+                    int m1,n1,m2,n2,m3,n3;
+                    int *arr1, *arr2,*arr3;
+                    printf("Please enter the size of the row\n");
+                    scanf("%d", &m1);
+                    printf("Please enter the size of the column\n");
+                    scanf("%d", &n1);
+                    arr1 = input2darr(m1,n1);
+                    n = marshal2darr(sockfd, 1, 5, m1,n1,arr1);
                     if (n < 0){
                         error("ERROR: marshal 2d array");
 
                     }
-                    int B[4][5] = {
-                        {1,2,3,4,5},
-                        {6,7,8,9,10},
-                        {11,12,13,14,15},
-                        {16,17,18,19,20}
-                    };
-                    n = marshal2darr(sockfd, 1, 5, 4,5,B);
+                    printf("Please enter the size of the row\n");
+                    scanf("%d", &m2);
+                    printf("Please enter the size of the column\n");
+                    scanf("%d", &n2);
+                    arr2 = input2darr(m2,n2);
+                    n = marshal2darr(sockfd, 1, 5, m2,n2,arr2);
                     if (n < 0){
                         error("ERROR: marshal 2d array");
 
                     }
-                    int C[5][3]={
-                        {1,2,3},
-                        {4,5,6},
-                        {7,8,9},
-                        {10,11,12},
-                        {13,14,15}
-                    };
-                    n = marshal2darr(sockfd, 1, 5, 5,3,C);
+                    printf("Please enter the size of the row\n");
+                    scanf("%d", &m3);
+                    printf("Please enter the size of the column\n");
+                    scanf("%d", &n3);
+                    arr3 = input2darr(m3,n3);
+                    n = marshal2darr(sockfd, 1, 5, m3,n3,arr3);
                     if (n < 0){
                         error("ERROR: marshal 2d array");
 
                     }
                     
-                    int  newarr[3][3];
-                    n = unmarshal2darr(sockfd,3,3,newarr);
+                    int  newarr[m1][n3];
+                    n = unmarshal2darr(sockfd,m1,n3,newarr);
                     if (n < 0){
                         error("ERROR: unmarshal 2d array");
 

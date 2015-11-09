@@ -310,7 +310,7 @@ int *unmarshalsort(int sockfd, int size)
     return arr;
 }
 
-int marshal2darr(int sockfd, int id, int number, int n, int m, int A[n][m])
+int marshal2darr(int sockfd, int id, int number, int n, int m, int A[m*n])
 {
     int re;
     // send m n struct first
@@ -329,15 +329,8 @@ int marshal2darr(int sockfd, int id, int number, int n, int m, int A[n][m])
     if (read(sockfd, buffer, BUFFER_SIZE))
     {
         puts("Send 2d array to server");
-        int temp[m*n];
-        for (int i = 0; i < n;i++)
-        {
-            for (int j = 0; j < m; j++)
-            {
-                temp[i*m+j] = A[i][j];
-            }
-        }
-        n = send(sockfd, temp, m*n*sizeof(int),0);
+
+        n = send(sockfd, A, m*n*sizeof(int),0);
         if (n < 0)
         {
             error("ERROR: sending 2d array from client");
@@ -494,19 +487,19 @@ int processmultiply(int sockfd, int self_id)
             }
         }
         free(temp3);
-        int res[n1][n1];
+        int res[n1][m3];
         memset(res, 0, sizeof(res));
-        multiply(n1,m1,m2, array1,array2, array3,res);
+        multiply(n1,m1,m2,m3, array1,array2, array3,res);
         //shan
-        int resarr[n1*n1];
+        int resarr[n1*m3];
         for (int i = 0;i<n1;i++)
         {
-            for (int j = 0;j < n1;j++)
+            for (int j = 0;j < m3;j++)
             {
-                resarr[i*n1+j] = res[i][j];
+                resarr[i*m3+j] = res[i][j];
             }
         }
-        for (int i = 0;i < n1*n1; i++)
+        for (int i = 0;i < n1*m3; i++)
         {
             printf("res[%d]:%d",i,resarr[i]);
 
@@ -517,7 +510,7 @@ int processmultiply(int sockfd, int self_id)
     p->id = htonl(id1);
     p->number = htonl(number1);
     p->n = htonl(n1);
-    p->m = htonl(n1);
+    p->m = htonl(m3);
     re = write(sockfd, p, sizeof(arr2d));
     if (re < 0)
     {
@@ -528,15 +521,15 @@ int processmultiply(int sockfd, int self_id)
     if (read(sockfd, buffer, BUFFER_SIZE))
     {
         puts("Send 2d array to server");
-        int temp[n1*n1];
+        int temp[n1*m3];
         for (int i = 0; i < n1;i++)
         {
-            for (int j = 0; j < n1; j++)
+            for (int j = 0; j < m3; j++)
             {
-                temp[i*n1+j] = res[i][j];
+                temp[i*m3+j] = res[i][j];
             }
         }
-        re = send(sockfd, temp, n1*n1*sizeof(int),0);
+        re = send(sockfd, temp, n1*m3*sizeof(int),0);
         if (re < 0)
         {
             error("ERROR: sending 2d array from client");

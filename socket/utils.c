@@ -83,7 +83,7 @@ int wc(char *str)
     }
     return wordCount;
 }
-void multiply(int n, int m, int l, int A[n][m], int B[m][l], int C[l][n], int res[n][n])
+void multiply(int n, int m, int l, int p, int A[n][m], int B[m][l], int C[l][p], int res[n][p])
 {
     int temp[n][l];
     memset(temp, 0, sizeof(temp));
@@ -99,7 +99,7 @@ void multiply(int n, int m, int l, int A[n][m], int B[m][l], int C[l][n], int re
     }
     for (int i = 0; i < n;i++)
     {
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < p; j++)
         {
             for (int k = 0; k < l; k++)
             {
