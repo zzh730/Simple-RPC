@@ -10,7 +10,9 @@ HOW TO RUN
 
 1. git clone https://github.com/zzh730/Simple-RPC.git 
 2. cd Simple-RPC
-3. make
-4. ./server
-5. ./directory
-6. ./client localhost 8888
+3. gcc -o compiler gen.c
+4. ./compiler
+5. make
+6. ./server
+7. ./directory
+8. ./client localhost 8888
